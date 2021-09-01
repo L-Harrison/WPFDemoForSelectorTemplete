@@ -12,10 +12,42 @@
     <UserControl.DataContext>
         <ViewModels:MainViewModel/>
     </UserControl.DataContext>
+    
     <UserControl.Resources>
         <ViewModels:IsCollectionNotEmptyToBoolConverter x:Key="isCollectionNotEmptyToBoolConverter" />
+        <Style TargetType="dxe:ComboBoxEdit" x:Key="com">
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style TargetType="dxe:ComboBoxEditItem">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="dxe:ComboBoxEditItem">
+                                    <Border Background="{TemplateBinding Background}"  Name="PART_Editor"  
+                                                                      IsEnabled="False"       CornerRadius="10">
+                                        <ContentPresenter        
+                                            IsEnabled="False"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsEnabled" Value="True">
+                                            <Setter Property="Opacity" Value="1"/>
+                                        </Trigger>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter Property="Opacity" Value="0"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
     <Grid >
+        <Grid.DataContext>
+            <ViewModels:MainViewModel/>
+        </Grid.DataContext>
         <dxg:GridControl ItemsSource="{Binding PersonInfo}" >
             <dxg:GridColumn FieldName="Name"></dxg:GridColumn>
             <dxg:GridColumn FieldName="Age"></dxg:GridColumn>
@@ -29,9 +61,43 @@
                                     <dxe:ComboBoxEdit  Name="PART_Editor"  IsTextEditable="False"
                                           DisplayMember="IdentityCard"  SelectedIndexChanged="PART_Editor_SelectedIndexChanged"
                                          ValueMember="IdentityCard"   
-                                         ValidateOnEnterKeyPressed="True"   
+                                         ValidateOnEnterKeyPressed="True"    
+                                                       CustomDisplayText="PART_Editor_CustomDisplayText"
                                           ItemsSource="{Binding DataContext.YN, RelativeSource={RelativeSource  Mode=FindAncestor, AncestorType=UserControl}}">
-                                        <dxe:ComboBoxEditItemStyle>
+                                        <dxe:ComboBoxEdit.ItemContainerStyle>
+                                            <Style TargetType="dxe:ComboBoxEditItem">
+                                                <Style.Setters>
+                                                    <Setter Property="Background" Value="Red"/>
+                                                     <Setter Property="Foreground" Value = "Red"/>
+                                                    <!--<Setter Property="IsEnabled" Value="{Binding DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=dxe:ComboBoxEdit},
+                                                        Converter={StaticResource isCollectionNotEmptyToBoolConverter},Mode=OneWay }" />-->
+                                                    <Setter Property="IsEnabled" Value="{Binding IsEnable}" />
+                                                </Style.Setters>
+                                                
+                                            </Style>
+                                        </dxe:ComboBoxEdit.ItemContainerStyle>
+                                        <!--<Style TargetType="dxe:ComboBoxEdit" >
+                                            <Setter Property="ItemContainerStyle">
+                                                <Setter.Value>
+                                                    <Style TargetType="dxe:ComboBoxEditItem">
+                                                        <Style.Setters>
+                                                            <Setter Property="IsSelected" Value="True"/>
+                                                        </Style.Setters>
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsEnabled" Value="True">
+                                                                <Setter Property="Opacity" Value="1"/>
+                                                            </Trigger>
+                                                            <Trigger Property="IsEnabled" Value="False">
+                                                                <Setter Property="Opacity" Value="0.2"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                      
+                                                    </Style>
+
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>-->
+                                        <!--<dxe:ComboBoxEditItemStyle>
                                             <dxe:ComboBoxEditItemStyle.Style>
                                                 <Style TargetType="dxe:ComboBoxEditItem">
                                                     <Style.Setters>
@@ -55,7 +121,7 @@
                                                     </Style.Setters>
                                                 </Style>
                                             </dxe:ComboBoxEditItemStyle.Style>
-                                        </dxe:ComboBoxEditItemStyle>
+                                        </dxe:ComboBoxEditItemStyle>-->
                                     </dxe:ComboBoxEdit>
                                 </DataTemplate>
                                 <DataTemplate DataType="北京">
@@ -76,13 +142,13 @@
                         </ViewModels:ProcessNameValueDataTemplateSelector.Templates>
                     </ViewModels:ProcessNameValueDataTemplateSelector>
                 </dxg:GridColumn.CellTemplateSelector>
-             
+
             </dxg:GridColumn>
             <dxg:GridControl.View>
                 <dxg:TableView ValidateCell="TableView_ValidateCell">
                     <dxmvvm:Interaction.Behaviors>
                         <dxmvvm:EventToCommand EventName="CellValueChanging" Command="{Binding LmisProcesValueChangedCommand}">
-                            
+
                         </dxmvvm:EventToCommand>
                     </dxmvvm:Interaction.Behaviors>
                 </dxg:TableView>

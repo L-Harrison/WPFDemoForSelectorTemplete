@@ -16,6 +16,19 @@ namespace WpfDemoForMultiSelectorTemplete.ViewModels
     {
         public object Convert(object value,Type targetType,object parameter,CultureInfo culture)
         {
+
+            if (value == null)
+                return false;
+            var va = value as DevExpress.Xpf.Grid.EditGridCellData;
+            var data = va.Column.DataContext as MainViewModel;
+            var row = va.Row as PersonInfo;
+            switch (row.Addr)
+            {
+                case "北京":
+                    //data.BJ
+                    break;
+            }
+           //(parameter as System.Windows.Data.RelativeSource). as DevExpress.Xpf.Grid.GridControl) ;  .
             return true;
         }
 
@@ -80,12 +93,16 @@ namespace WpfDemoForMultiSelectorTemplete.ViewModels
             {
                 Addr = "北京",
                 Age = 12,
-                Name = "王松"
+                IdentityCard = "001002",
+
+                Name = "张芸"
             });
             PersonInfo.Add(new ViewModels.PersonInfo()
             {
                 Addr = "北京",
                 Age = 12,
+                IdentityCard = "001001",
+
                 Name = "王松"
             });
             PersonInfo.Add(new ViewModels.PersonInfo()
@@ -166,6 +183,7 @@ namespace WpfDemoForMultiSelectorTemplete.ViewModels
     }
     public class PersonInfo :BindableBase
     {
+
         private string name;
 
         public string Name
@@ -198,9 +216,22 @@ namespace WpfDemoForMultiSelectorTemplete.ViewModels
 
 
     }
-    public class IdentityCardInfo
+    public class IdentityCardInfo : BindableBase
     {
+        public IdentityCardInfo()
+        {
+            IsEnable = true;
+        }
         public string Addr { get; set; }
         public string IdentityCard { get; set; }
+
+        private bool isEnable;
+
+        public bool IsEnable
+        {
+            get { return isEnable; }
+            set => SetProperty(ref isEnable, value, "IsEnable");
+        }
+
     }
 }
