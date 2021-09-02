@@ -48,6 +48,10 @@
         <Grid.DataContext>
             <ViewModels:MainViewModel/>
         </Grid.DataContext>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
         <dxg:GridControl ItemsSource="{Binding PersonInfo}" >
             <dxg:GridColumn FieldName="Name"></dxg:GridColumn>
             <dxg:GridColumn FieldName="Age"></dxg:GridColumn>
@@ -154,5 +158,10 @@
                 </dxg:TableView>
             </dxg:GridControl.View>
         </dxg:GridControl>
+        <UniformGrid Grid.Row="1">
+            <Button>
+
+            </Button>
+        </UniformGrid>
     </Grid>
 </UserControl>

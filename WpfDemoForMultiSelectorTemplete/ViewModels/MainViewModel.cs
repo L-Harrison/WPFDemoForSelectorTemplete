@@ -6,15 +6,18 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Markup;
+using System.Xml;
 
 namespace WpfDemoForMultiSelectorTemplete.ViewModels
 {
-    public class IsCollectionNotEmptyToBoolConverter :IValueConverter
+    public class IsCollectionNotEmptyToBoolConverter : IValueConverter
     {
-        public object Convert(object value,Type targetType,object parameter,CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
 
             if (value == null)
@@ -28,21 +31,21 @@ namespace WpfDemoForMultiSelectorTemplete.ViewModels
                     //data.BJ
                     break;
             }
-           //(parameter as System.Windows.Data.RelativeSource). as DevExpress.Xpf.Grid.GridControl) ;  .
+            //(parameter as System.Windows.Data.RelativeSource). as DevExpress.Xpf.Grid.GridControl) ;  .
             return true;
         }
 
-        public object ConvertBack(object value,Type targetType,object parameter,CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return null;
         }
     }
-    public class TemplateList :List<DataTemplate>
+    public class TemplateList : List<DataTemplate>
     {
     }
-    public class ProcessNameValueDataTemplateSelector :DataTemplateSelector
+    public class ProcessNameValueDataTemplateSelector : DataTemplateSelector
     {
-        public override DataTemplate SelectTemplate(object item,DependencyObject container)
+        public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
 
             var k = (item as DevExpress.Xpf.Grid.EditGridCellData)?.Row as PersonInfo;
@@ -54,39 +57,82 @@ namespace WpfDemoForMultiSelectorTemplete.ViewModels
         }
         public TemplateList Templates { get; set; }
     }
-    public class MainViewModel :ViewModelBase
+    public class MainViewModel : ViewModelBase
     {
         private ObservableCollection<PersonInfo> personInfo;
 
         public ObservableCollection<PersonInfo> PersonInfo
         {
             get { return personInfo; }
-            set => SetProperty(ref personInfo,value,"PersonInfo");
+            set => SetProperty(ref personInfo, value, "PersonInfo");
         }
         private ObservableCollection<IdentityCardInfo> yn;
 
         public ObservableCollection<IdentityCardInfo> YN
         {
             get { return yn; }
-            set => SetProperty(ref yn,value,"YN");
+            set => SetProperty(ref yn, value, "YN");
         }
         private ObservableCollection<IdentityCardInfo> bj;
 
         public ObservableCollection<IdentityCardInfo> BJ
         {
             get { return bj; }
-            set => SetProperty(ref bj,value,"BJ");
+            set => SetProperty(ref bj, value, "BJ");
         }
         private ObservableCollection<IdentityCardInfo> hn;
 
         public ObservableCollection<IdentityCardInfo> HN
         {
             get { return hn; }
-            set => SetProperty(ref hn,value,"HN");
+            set => SetProperty(ref hn, value, "HN");
         }
         public DelegateCommand<CellValueChangedEventArgs> LmisProcesValueChangedCommand { set; get; }
         public MainViewModel()
         {
+            List<Type> typesList = new List<Type>();
+            var types = typeof(Control);
+            ////var types = typeof(DataControlBase);
+            var assembly = System.Reflection.Assembly.GetAssembly(types);
+            foreach (var item in assembly.GetTypes())
+            {
+                if (item.IsSubclassOf(types) && !item.IsAbstract && item.IsPublic)
+                {
+                    typesList.Add(item);
+                }
+                //if (!item.IsAbstract && item.IsPublic)
+                //{
+                //    typesList.Add(item);
+                //}
+            }
+            foreach (var item in typesList)
+            {
+                try
+                {
+                    System.Reflection.ConstructorInfo info = item.GetConstructor(System.Type.EmptyTypes);
+                    if (info == null)
+                        continue; 
+                    var controls = (Control)info.Invoke(null);
+                    controls.Visibility = Visibility.Collapsed;
+                    //
+                    ControlTemplate controlTemplate = controls.Template;
+                    XmlWriterSettings xamlWriterSettings = new XmlWriterSettings();
+                    xamlWriterSettings.Indent = true;
+                    StringBuilder stringBuilder = new StringBuilder();
+                    XmlWriter xmlWriter = XmlWriter.Create(stringBuilder, xamlWriterSettings);
+                    XamlWriter.Save(controlTemplate, xmlWriter);
+                    var s = stringBuilder.ToString();
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+
+
+
+
+
             LmisProcesValueChangedCommand = new DelegateCommand<CellValueChangedEventArgs>(OnLmValueChanged);
             PersonInfo = new ObservableCollection<PersonInfo>();
             PersonInfo.Add(new ViewModels.PersonInfo()
@@ -181,7 +227,7 @@ namespace WpfDemoForMultiSelectorTemplete.ViewModels
 
         }
     }
-    public class PersonInfo :BindableBase
+    public class PersonInfo : BindableBase
     {
 
         private string name;
@@ -189,7 +235,7 @@ namespace WpfDemoForMultiSelectorTemplete.ViewModels
         public string Name
         {
             get { return name; }
-            set => SetProperty(ref name,value,"Name");
+            set => SetProperty(ref name, value, "Name");
         }
 
         private int age;
@@ -197,21 +243,21 @@ namespace WpfDemoForMultiSelectorTemplete.ViewModels
         public int Age
         {
             get { return age; }
-            set => SetProperty(ref age,value,"Age");
+            set => SetProperty(ref age, value, "Age");
         }
         private string addr;
 
         public string Addr
         {
             get { return addr; }
-            set => SetProperty(ref addr,value,"Addr");
+            set => SetProperty(ref addr, value, "Addr");
         }
         private string identityCard;
 
         public string IdentityCard
         {
             get { return identityCard; }
-            set => SetProperty(ref identityCard,value,"IdentityCard");
+            set => SetProperty(ref identityCard, value, "IdentityCard");
         }
 
 
