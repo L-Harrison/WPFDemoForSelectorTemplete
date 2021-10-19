@@ -43,6 +43,18 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <ControlTemplate TargetType="Button" x:Key="btn">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Background="AliceBlue">
+                <Border Background="Red" Width="20" Height="20" 
+                        BorderBrush="Orange"
+                        BorderThickness="2"
+                        CornerRadius="50" TextBlock.Foreground="White" >
+                </Border>
+                <ContentPresenter Margin="{TemplateBinding Padding }"/>
+
+            </StackPanel>
+           
+        </ControlTemplate>
     </UserControl.Resources>
     <Grid >
         <Grid.DataContext>
@@ -159,8 +171,8 @@
             </dxg:GridControl.View>
         </dxg:GridControl>
         <UniformGrid Grid.Row="1">
-            <Button>
-
+            <Button Content="Looking" Template="{StaticResource btn}">
+               
             </Button>
         </UniformGrid>
     </Grid>

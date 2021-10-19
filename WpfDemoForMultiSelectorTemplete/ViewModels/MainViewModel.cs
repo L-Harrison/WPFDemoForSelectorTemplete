@@ -90,45 +90,48 @@ namespace WpfDemoForMultiSelectorTemplete.ViewModels
         public DelegateCommand<CellValueChangedEventArgs> LmisProcesValueChangedCommand { set; get; }
         public MainViewModel()
         {
-            List<Type> typesList = new List<Type>();
-            var types = typeof(Control);
-            ////var types = typeof(DataControlBase);
-            var assembly = System.Reflection.Assembly.GetAssembly(types);
-            foreach (var item in assembly.GetTypes())
-            {
-                if (item.IsSubclassOf(types) && !item.IsAbstract && item.IsPublic)
-                {
-                    typesList.Add(item);
-                }
-                //if (!item.IsAbstract && item.IsPublic)
-                //{
-                //    typesList.Add(item);
-                //}
-            }
-            foreach (var item in typesList)
-            {
-                try
-                {
-                    System.Reflection.ConstructorInfo info = item.GetConstructor(System.Type.EmptyTypes);
-                    if (info == null)
-                        continue; 
-                    var controls = (Control)info.Invoke(null);
-                    controls.Visibility = Visibility.Collapsed;
-                    //
-                    ControlTemplate controlTemplate = controls.Template;
-                    XmlWriterSettings xamlWriterSettings = new XmlWriterSettings();
-                    xamlWriterSettings.Indent = true;
-                    StringBuilder stringBuilder = new StringBuilder();
-                    XmlWriter xmlWriter = XmlWriter.Create(stringBuilder, xamlWriterSettings);
-                    XamlWriter.Save(controlTemplate, xmlWriter);
-                    var s = stringBuilder.ToString();
-                }
-                catch (Exception ex)
-                {
+            System.Threading.Tasks.Task.Run(() => {
 
+                List<Type> typesList = new List<Type>();
+                var types = typeof(Control);
+                ////var types = typeof(DataControlBase);
+                var assembly = System.Reflection.Assembly.GetAssembly(types);
+                foreach (var item in assembly.GetTypes())
+                {
+                    if (item.IsSubclassOf(types) && !item.IsAbstract && item.IsPublic)
+                    {
+                        typesList.Add(item);
+                    }
+                    //if (!item.IsAbstract && item.IsPublic)
+                    //{
+                    //    typesList.Add(item);
+                    //}
                 }
-            }
+                foreach (var item in typesList)
+                {
+                    try
+                    {
+                        System.Reflection.ConstructorInfo info = item.GetConstructor(System.Type.EmptyTypes);
+                        if (info == null)
+                            continue;
+                        var controls = (Control)info.Invoke(null);
+                        controls.Visibility = Visibility.Collapsed;
+                        //
+                        ControlTemplate controlTemplate = controls.Template;
+                        XmlWriterSettings xamlWriterSettings = new XmlWriterSettings();
+                        xamlWriterSettings.Indent = true;
+                        StringBuilder stringBuilder = new StringBuilder();
+                        XmlWriter xmlWriter = XmlWriter.Create(stringBuilder, xamlWriterSettings);
+                        XamlWriter.Save(controlTemplate, xmlWriter);
+                        var s = stringBuilder.ToString();
+                    }
+                    catch (Exception ex)
+                    {
 
+                    }
+                }
+            });
+           
 
 
 
